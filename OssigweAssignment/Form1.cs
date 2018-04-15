@@ -18,9 +18,9 @@ namespace sweProject
     public partial class Form1 : Form
     {
         Initialization init = new Initialization(new Folder(), new Files(), new JsonSerializer());
-        const string pathForSaveFolder = @"C:\Users\Chris\Source\Repos\dbsproject4\Json.json";
-        const string pathForSaveFile = @"C:\Users\Chris\Source\Repos\dbsproject4\savedWords.json";
-        const string PathForBinary = @"C:\Users\Chris\Source\Repos\dbsproject4\binary.bin";
+        const string pathForSaveFolder = @"C:\Users\Chris\Desktop\SE-DBS\Json.json";
+        const string pathForSaveFile = @"C:\Users\Chris\Desktop\SE-DBS\savedWords.json";
+        const string PathForBinary = @"C:\Users\Chris\Desktop\SE-DBS\binary.bin";
 
         public Form1()
         {
@@ -30,29 +30,54 @@ namespace sweProject
             progressBar1.Value = 0;
             init.InitializeLinkListsForFile(this.panel5, this.treeView1, this.progressBar1);
             //this.progressBar1.Hide();
+            //this is used for the reporting side bar
+            if (File.Exists(pathForSaveFile) && File.Exists(pathForSaveFolder))
+            {
+                var allSearchText = File.ReadAllText(pathForSaveFile);
+                var AllIndexedWord = File.ReadAllText(pathForSaveFolder);
+                var ListOfFolders = JsonConvert.DeserializeObject<List<Folder>>(AllIndexedWord);
+                var TotalIndexedWord = ListOfFolders.Sum(x => x.Files.Sum(y => y.FileLength));
+                var ListOfSearchedWords = JsonConvert.DeserializeObject<List<SearchedWord>>(allSearchText);
+                var mostSearchedOrder = ListOfSearchedWords.OrderByDescending(x => x.NoOfSearchedTime).ToArray();
+                var highestWordOder = ListOfSearchedWords.OrderByDescending(x => x.Word.Length).ToArray();
+                label14.Text = mostSearchedOrder[0].Word;
+                label16.Text = highestWordOder[0].Word;
+                label15.Text = highestWordOder[highestWordOder.Length - 1].Word;
+               // label13.Text = arrayOfStringToUser[1];
+                label12.Text = TotalIndexedWord.ToString();
+            }
+
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
             var FoldersToSearch = init.GetSavedFoldersFromFile(pathForSaveFolder);
             if (FoldersToSearch != null)
             {
-
-                if (Directory.Exists(FoldersToSearch[0].FolderName))
+                try
                 {
-                    var result = init.SearchWordFromSavedFiles(this.textReader, this.textBox1, FoldersToSearch, this);
-                    if (result != null)
+                    if (Directory.Exists(FoldersToSearch[0].FolderName))
                     {
-                        panel19.Controls.Clear();
-                        panel16.Controls.Clear();
-                        panel15.Controls.Clear();
-                        SetTableHeaders();
-                        panel16.Controls.AddRange(result.Item1.ToArray());
-                        panel19.Controls.AddRange(result.Item2.ToArray());
-                        panel15.Controls.AddRange(result.Item3.ToArray());
+                        var result = init.SearchWordFromSavedFiles(this.textReader, this.textBox1, FoldersToSearch, this);
+                        if (result != null)
+                        {
+                            panel19.Controls.Clear();
+                            panel16.Controls.Clear();
+                            panel15.Controls.Clear();
+                            SetTableHeaders();
+                            panel16.Controls.AddRange(result.Item1.ToArray());
+                            panel19.Controls.AddRange(result.Item2.ToArray());
+                            panel15.Controls.AddRange(result.Item3.ToArray());
+                        }
+                        return;
                     }
-                    return;
                 }
+                catch
+                {
+                    
+                }
+                MessageBox.Show("Please Select a folder before searching for a word");
             }
+            
         }
         public void SetTableHeaders()
         {
@@ -276,6 +301,11 @@ namespace sweProject
                 }
             }
             return;
+        }
+
+        private void label16_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

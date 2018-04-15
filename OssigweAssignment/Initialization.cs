@@ -14,9 +14,9 @@ namespace sweProject
 
     public class Initialization
     {
-        const string pathForSavedFolder = @"C:\Users\Chris\Source\Repos\dbsproject4\Json.json";
-        const string pathForSaveFile = @"C:\Users\Chris\Source\Repos\dbsproject4\savedWords.json";
-        const string PathForBinary = @"C:\Users\Chris\Source\Repos\dbsproject4\binary.bin";
+        const string pathForSavedFolder = @"C:\Users\Chris\Desktop\SE-DBS\Json.json";
+        const string pathForSaveFile = @"C:\Users\Chris\Desktop\SE-DBS\savedWords.json";
+        const string PathForBinary = @"C:\Users\Chris\Desktop\SE-DBS\binary.bin";
         DirectoryInfo DirectoryInfo;
         Folder folder;
         Files file;
@@ -188,7 +188,7 @@ namespace sweProject
                 var newFileFromBinary = BR.ReadString();
                 var newJsonObject = JsonConvert.DeserializeObject<List<Folder>>(newFileFromBinary);
                 var jsonToAddAgainForTest = JsonConvert.SerializeObject(newJsonObject);
-                File.WriteAllText(@"C:\Users\Chris\Source\Repos\dbsproject4\temp.json", jsonToAddAgainForTest);
+                File.WriteAllText(@"C:\Users\Chris\Desktop\SE-DBS\temp.json", jsonToAddAgainForTest);
             };
             JArray jsonObject = JArray.Parse(AllText);
 
